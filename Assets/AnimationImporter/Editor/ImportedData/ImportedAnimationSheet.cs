@@ -8,6 +8,12 @@ using System.Linq;
 
 namespace AnimationImporter
 {
+    public struct NamedSpriteInfo
+    {
+        public string name;
+        public Blingame.Importers.SpritePacker.SpriteInfo info;
+    }
+    
     public class ImportedAnimationSheet
     {
         public Texture2D srcTex;
@@ -239,19 +245,22 @@ namespace AnimationImporter
                 default: return new Vector2(customX, customY);
             };
         }
-        public void AppendSpriteInfo(SpriteAlignment spriteAlignment, float customX, float customY, List<Blingame.Importers.SpritePacker.SpriteInfo> spriteInfos)
+        public void AppendSpriteInfo(SpriteAlignment spriteAlignment, float customX, float customY, List<NamedSpriteInfo> spriteInfos)
         {
             var pivot = GetActualPivot(spriteAlignment, customX, customY);
 
             for (int i = 0; i < frames.Count; i++)
             {
                 ImportedAnimationFrame spriteInfo = frames[i];
-                spriteInfos.Add(new Blingame.Importers.SpritePacker.SpriteInfo
+                spriteInfos.Add(new NamedSpriteInfo
                 {
-                    tex = this.srcTex,
                     name = spriteInfo.name,
-                    frame = new RectInt(spriteInfo.x, spriteInfo.y, spriteInfo.width, spriteInfo.height),
-                    pivotN = pivot
+                    info = new Blingame.Importers.SpritePacker.SpriteInfo
+                    {
+                        tex = this.srcTex,
+                        frame = new RectInt(spriteInfo.x, spriteInfo.y, spriteInfo.width, spriteInfo.height),
+                        pivotN = pivot
+                    }
                 });
             }
         }

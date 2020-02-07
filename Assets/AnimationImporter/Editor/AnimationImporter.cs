@@ -463,7 +463,7 @@ namespace AnimationImporter
             {
                 return;
             }
-            var spriteInfos = new List<SpritePacker.SpriteInfo>();
+            var spriteInfos = new List<NamedSpriteInfo>();
             animationSheet.AppendSpriteInfo(
                 sharedData.spriteAlignment,
                 sharedData.spriteAlignmentCustomX,
@@ -471,8 +471,10 @@ namespace AnimationImporter
                 spriteInfos
             );
 
+            var siMap = new Dictionary<uint, NamedSpriteInfo>();
+            var nameMap = new Dictionary<string, string>();
+
             var outputTexs = new Dictionary<Texture2D, SpriteMetaData[]>();
-            var spriteDict = new Dictionary<string, Sprite>();
             Texture2D targetTex;
             if (sharedData.doTrim)
             {
@@ -482,15 +484,28 @@ namespace AnimationImporter
                     return; //?
                 }
 
-                var trimmed = new SpritePacker.SpriteInfo[spriteInfos.Count];
-                for (int i = 0; i < trimmed.Length; ++i)
+                var trimIndexList = new List<uint>();
+                for (int i = 0; i < spriteInfos.Count; ++i)
                 {
-                    job.SetProgress(0.4f + i / (10.0f * trimmed.Length), "trimming sprite " + i.ToString());
-                    trimmed[i] = spriteInfos[i].Trim(sharedData.trimColor, sharedData.trimMargin.x, sharedData.trimMargin.y);
+                    job.SetProgress(0.4f + i / (10.0f * spriteInfos.Count), "trimming sprite " + i.ToString());
+                    var trimmed = spriteInfos[i].info.Trim(sharedData.trimColor, sharedData.trimMargin.x, sharedData.trimMargin.y);
+                    var trimmedCrc = trimmed.GetCrc32();
+                    if (!siMap.ContainsKey(trimmedCrc))
+                    {
+                        siMap[trimmedCrc] = new NamedSpriteInfo
+                        {
+                            name = spriteInfos[i].name,
+                            info = trimmed,
+                        };
+                        trimIndexList.Add(trimmedCrc);
+                    }
+                    nameMap[spriteInfos[i].name] = siMap[trimmedCrc].name;
                 }
 
-                System.Array.Sort(trimmed, (lhs, rhs) =>
+                trimIndexList.Sort((lhsi, rhsi) =>
                 {
+                    var lhs = siMap[lhsi].info;
+                    var rhs = siMap[rhsi].info;
                     if (lhs.frame.height != rhs.frame.height)
                     {
                         return rhs.frame.height - lhs.frame.height;
@@ -498,48 +513,50 @@ namespace AnimationImporter
                     return rhs.frame.width - lhs.frame.width;
                 });
 
-
                 Vector2Int targetOffset = new Vector2Int(0, 0);
                 int currentRowHeight = -1;
                 targetTex = new Texture2D(sharedData.trimTexSize.x, sharedData.trimTexSize.y, TextureFormat.RGBA32, false); // TODO: proper linear flag
                 spriteInfos.Clear();
-                for (int i = 0; i < trimmed.Length; ++i)
+                for (int i = 0; i < trimIndexList.Count; ++i)
                 {
-                    job.SetProgress(0.5f + i / (10.0f * trimmed.Length), string.Format("packing {0} with size {1} at {2}", trimmed[i].name, trimmed[i].frame, targetOffset));
+                    var tis = siMap[trimIndexList[i]];
+                    job.SetProgress(0.5f + i / (10.0f * trimIndexList.Count), string.Format("packing {0} at {1} to {2}", tis.name, tis.info.frame, targetOffset));
                     var ti = new SpritePacker.SpriteInfo
                     {
                         tex = targetTex,
                         frame = new RectInt(targetOffset.x, targetOffset.y, 0, 0)
                     };
 
-                    if (trimmed[i].TryCopyTo(ref ti))
+                    if (tis.info.TryCopyTo(ref ti))
                     {
                         if (currentRowHeight < 0)
                         {
                             currentRowHeight = ti.frame.height;
                         }
                         targetOffset.x += ti.frame.width;
-                        spriteInfos.Add(ti);
+                        tis.info = ti;
+                        spriteInfos.Add(tis);
                     }
                     else
                     {
                         targetOffset = new Vector2Int(0, targetOffset.y + currentRowHeight);
                         currentRowHeight = -1;
                         ti.frame = new RectInt(targetOffset.x, targetOffset.y, 0, 0);
-                        if (trimmed[i].TryCopyTo(ref ti))
+                        if (tis.info.TryCopyTo(ref ti))
                         {
                             if (currentRowHeight < 0)
                             {
                                 currentRowHeight = ti.frame.height;
                             }
                             targetOffset.x += ti.frame.width;
-                            spriteInfos.Add(ti);
+                            tis.info = ti;
+                            spriteInfos.Add(tis);
                         }
                         else
                         {
                             if (
-                                trimmed[i].frame.width > sharedData.trimTexSize.x
-                                || trimmed[i].frame.height > sharedData.trimTexSize.y
+                                tis.info.frame.width > sharedData.trimTexSize.x
+                                || tis.info.frame.height > sharedData.trimTexSize.y
                             )
                             {
                                 throw new System.ArgumentOutOfRangeException("target cannot be packed inside trimmed width");
@@ -551,9 +568,9 @@ namespace AnimationImporter
                                 smds[si] = new SpriteMetaData
                                 {
                                     name = spriteInfos[si].name,
-                                    rect = new Rect(spriteInfos[si].frame.x, spriteInfos[si].frame.y, spriteInfos[si].frame.width, spriteInfos[si].frame.height),
+                                    rect = new Rect(spriteInfos[si].info.frame.x, spriteInfos[si].info.frame.y, spriteInfos[si].info.frame.width, spriteInfos[si].info.frame.height),
                                     alignment = (int)SpriteAlignment.Custom,
-                                    pivot = spriteInfos[si].pivotN,
+                                    pivot = spriteInfos[si].info.pivotN,
                                 };
                             }
 
@@ -583,9 +600,9 @@ namespace AnimationImporter
                     smds[si] = new SpriteMetaData
                     {
                         name = spriteInfos[si].name,
-                        rect = new Rect(spriteInfos[si].frame.x, spriteInfos[si].frame.y, spriteInfos[si].frame.width, spriteInfos[si].frame.height),
+                        rect = new Rect(spriteInfos[si].info.frame.x, spriteInfos[si].info.frame.y, spriteInfos[si].info.frame.width, spriteInfos[si].info.frame.height),
                         alignment = (int)SpriteAlignment.Custom,
-                        pivot = spriteInfos[si].pivotN,
+                        pivot = spriteInfos[si].info.pivotN,
                     };
                 }
 
@@ -595,6 +612,7 @@ namespace AnimationImporter
 
 
             int kvi = 0;
+            var spriteDict = new Dictionary<string, Sprite>();
             foreach (var kv in outputTexs)
             {
                 job.SetProgress(0.6f + 0.1f * (kvi / (float)outputTexs.Count), "saving textures " + kvi);
@@ -641,6 +659,16 @@ namespace AnimationImporter
                         spriteDict[sprite.name] = sprite;
                     }
                 }
+            }
+
+            if (nameMap.Count != 0)
+            {
+                var replaceMap = new Dictionary<string, Sprite>();
+                foreach (var kv in nameMap)
+                {
+                    replaceMap[kv.Key] = spriteDict[kv.Value];
+                }
+                spriteDict = replaceMap;
             }
             foreach (var kv in outputTexs)
             {
