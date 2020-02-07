@@ -234,8 +234,8 @@ namespace AnimationImporter
                 case SpriteAlignment.LeftCenter: return new Vector2(0, 0.5f);
                 case SpriteAlignment.RightCenter: return new Vector2(1, 0.5f);
                 case SpriteAlignment.BottomLeft: return new Vector2(0, 0);
-                case SpriteAlignment.BottomCenter: return new Vector2(0, 0.5f);
-                case SpriteAlignment.BottomRight: return new Vector2(0, 1);
+                case SpriteAlignment.BottomCenter: return new Vector2(0.5f, 0);
+                case SpriteAlignment.BottomRight: return new Vector2(1, 0);
                 default: return new Vector2(customX, customY);
             };
         }
