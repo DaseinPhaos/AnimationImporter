@@ -434,7 +434,7 @@ namespace AnimationImporter
 
             foreach (var animation in animationInfo.animations)
             {
-                animationInfo.CreateAnimation(animation, pathForAnimations, masterName, sharedData.targetObjectType, sharedData.clipFramerate);
+                animationInfo.CreateAnimation(animation, pathForAnimations, masterName, sharedData.targetObjectType, sharedData.clipFramerate, sharedData.forceToClipFramerate, sharedData.animationBindingPrefix);
             }
         }
 
@@ -593,10 +593,11 @@ namespace AnimationImporter
                 spriteInfos.Clear();
             }
 
-            job.SetProgress(0.6f, "saving textures");
+
             int kvi = 0;
             foreach (var kv in outputTexs)
             {
+                job.SetProgress(0.6f + 0.1f * (kvi / (float)outputTexs.Count), "saving textures " + kvi);
                 string imgPath;
                 if (kvi <= 0)
                 {
@@ -609,7 +610,6 @@ namespace AnimationImporter
                 kvi++;
 
                 SaveAsPng(kv.Key, imgPath);
-                Texture2D.DestroyImmediate(kv.Key);
 
                 AssetDatabase.Refresh();
                 AssetDatabase.ImportAsset(imgPath, ImportAssetOptions.ForceUpdate);
@@ -642,7 +642,11 @@ namespace AnimationImporter
                     }
                 }
             }
-
+            foreach (var kv in outputTexs)
+            {
+                Texture2D.DestroyImmediate(kv.Key);
+            }
+            outputTexs.Clear();
             animationSheet.ApplyCreatedSprites(spriteDict);
         }
 

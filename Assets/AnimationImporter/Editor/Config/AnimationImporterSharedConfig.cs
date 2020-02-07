@@ -56,8 +56,6 @@ namespace AnimationImporter
             }
         }
 
-        public int clipFramerate = 30;
-
         [SerializeField]
         private SpriteAlignment _spriteAlignment = SpriteAlignment.BottomCenter;
         public SpriteAlignment spriteAlignment
@@ -100,6 +98,10 @@ namespace AnimationImporter
             }
         }
 
+        public int clipFramerate = 30;
+        public bool forceToClipFramerate;
+        public string animationBindingPrefix = "";
+
         public bool doTrim;
         public Color trimColor = Color.clear;
         public Vector2Int trimMargin = new Vector2Int(2, 2);
@@ -129,6 +131,7 @@ namespace AnimationImporter
             set { _animationControllersTargetLocation = value; }
         }
 
+        [SerializeField]
         private SpriteNamingScheme _spriteNamingScheme = SpriteNamingScheme.Classic;
         public SpriteNamingScheme spriteNamingScheme
         {

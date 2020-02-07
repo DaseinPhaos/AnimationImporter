@@ -82,7 +82,7 @@ namespace AnimationImporter
             return null;
         }
 
-        public void CreateAnimation(ImportedAnimation anim, string basePath, string masterName, AnimationTargetObjectType targetType, int frameRate)
+        public void CreateAnimation(ImportedAnimation anim, string basePath, string masterName, AnimationTargetObjectType targetType, int framerate, bool forceToFramerate, string bindingPath)
         {
             AnimationClip clip;
             string fileName = basePath + "/" + masterName + "_" + anim.name + ".anim";
@@ -102,7 +102,7 @@ namespace AnimationImporter
             }
 
             // framerates
-            clip.frameRate = frameRate;
+            clip.frameRate = framerate;
             // change loop settings
             if (isLooping)
             {
@@ -120,6 +120,9 @@ namespace AnimationImporter
             ObjectReferenceKeyframe[] keyFrames = new ObjectReferenceKeyframe[srcKeyframes.Length + 1];
             float timeOffset = 0f;
 
+            var srEcb = AnimationClipUtility.GetSpriteRendererCurveBinding(bindingPath);
+            var imgEcb = AnimationClipUtility.GetImageCurveBinding(bindingPath);
+
             for (int i = 0; i < srcKeyframes.Length; i++)
             {
                 // first sprite will be set at the beginning (t=0) of the animation
@@ -130,7 +133,7 @@ namespace AnimationImporter
                 };
 
                 // add duration of frame in seconds
-                timeOffset += srcKeyframes[i].duration / 1000f;
+                timeOffset += forceToFramerate ? (1.0f / framerate) : (srcKeyframes[i].duration / 1000f);
             }
 
             // repeating the last frame at a point "just before the end" so the animation gets its correct length
@@ -143,18 +146,18 @@ namespace AnimationImporter
             // save curve into clip, either for SpriteRenderer, Image, or both
             if (targetType == AnimationTargetObjectType.SpriteRenderer)
             {
-                AnimationUtility.SetObjectReferenceCurve(clip, AnimationClipUtility.spriteRendererCurveBinding, keyFrames);
-                AnimationUtility.SetObjectReferenceCurve(clip, AnimationClipUtility.imageCurveBinding, null);
+                AnimationUtility.SetObjectReferenceCurve(clip, srEcb, keyFrames);
+                AnimationUtility.SetObjectReferenceCurve(clip, imgEcb, null);
             }
             else if (targetType == AnimationTargetObjectType.Image)
             {
-                AnimationUtility.SetObjectReferenceCurve(clip, AnimationClipUtility.spriteRendererCurveBinding, null);
-                AnimationUtility.SetObjectReferenceCurve(clip, AnimationClipUtility.imageCurveBinding, keyFrames);
+                AnimationUtility.SetObjectReferenceCurve(clip, srEcb, null);
+                AnimationUtility.SetObjectReferenceCurve(clip, imgEcb, keyFrames);
             }
             else if (targetType == AnimationTargetObjectType.SpriteRendererAndImage)
             {
-                AnimationUtility.SetObjectReferenceCurve(clip, AnimationClipUtility.spriteRendererCurveBinding, keyFrames);
-                AnimationUtility.SetObjectReferenceCurve(clip, AnimationClipUtility.imageCurveBinding, keyFrames);
+                AnimationUtility.SetObjectReferenceCurve(clip, srEcb, keyFrames);
+                AnimationUtility.SetObjectReferenceCurve(clip, imgEcb, keyFrames);
             }
 
             EditorUtility.SetDirty(clip);
@@ -236,10 +239,10 @@ namespace AnimationImporter
                 default: return new Vector2(customX, customY);
             };
         }
-        public void AppendSpriteInfo( SpriteAlignment spriteAlignment, float customX, float customY, List<Blingame.Importers.SpritePacker.SpriteInfo> spriteInfos)
+        public void AppendSpriteInfo(SpriteAlignment spriteAlignment, float customX, float customY, List<Blingame.Importers.SpritePacker.SpriteInfo> spriteInfos)
         {
             var pivot = GetActualPivot(spriteAlignment, customX, customY);
-            
+
             for (int i = 0; i < frames.Count; i++)
             {
                 ImportedAnimationFrame spriteInfo = frames[i];

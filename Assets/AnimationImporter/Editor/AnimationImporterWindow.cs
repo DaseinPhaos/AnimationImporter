@@ -130,6 +130,10 @@ namespace AnimationImporter
 
             ShowHeadline("Config");
 
+            importer.sharedData.clipFramerate = EditorGUILayout.IntField("Framerate", importer.sharedData.clipFramerate);
+            importer.sharedData.forceToClipFramerate = EditorGUILayout.Toggle("Force to Clip Framerate", importer.sharedData.forceToClipFramerate);
+            importer.sharedData.animationBindingPrefix = EditorGUILayout.TextField("Anim Binding Prefix", importer.sharedData.animationBindingPrefix);
+
             /*
 				Aseprite Application
 			*/
@@ -304,7 +308,6 @@ namespace AnimationImporter
         private void ShowAnimationsGUI()
         {
             ShowHeadline("Animations");
-            importer.sharedData.clipFramerate = EditorGUILayout.IntField("Framerate", importer.sharedData.clipFramerate);
             DefaultAsset[] droppedAssets = ShowDropButton<DefaultAsset>(importer.canImportAnimations, AnimationImporter.IsValidAsset);
             if (droppedAssets != null && droppedAssets.Length > 0)
             {
