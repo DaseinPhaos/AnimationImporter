@@ -457,6 +457,18 @@ namespace AnimationImporter
             }
         }
 
+        public static void ClearTexture(Texture2D tex, Color color)
+        {
+            for (int y = 0; y < tex.height; ++y)
+            {
+                for (int x = 0; x < tex.width; ++x)
+                {
+                    tex.SetPixel(x, y, color);
+                }
+            }
+            tex.Apply();
+        }
+
         private void CreateSprites(ImportedAnimationSheet animationSheet, AnimationImportJob job)
         {
             if (animationSheet == null)
@@ -516,6 +528,7 @@ namespace AnimationImporter
                 Vector2Int targetOffset = new Vector2Int(0, 0);
                 int currentRowHeight = -1;
                 targetTex = new Texture2D(sharedData.trimTexSize.x, sharedData.trimTexSize.y, TextureFormat.RGBA32, false); // TODO: proper linear flag
+                ClearTexture(targetTex, Color.clear);
                 spriteInfos.Clear();
                 for (int i = 0; i < trimIndexList.Count; ++i)
                 {
@@ -577,6 +590,7 @@ namespace AnimationImporter
                             outputTexs.Add(targetTex, smds);
                             spriteInfos.Clear();
                             targetTex = new Texture2D(sharedData.trimTexSize.x, sharedData.trimTexSize.y, TextureFormat.RGBA32, false);
+                            ClearTexture(targetTex, Color.clear);
                             targetOffset = new Vector2Int(0, 0);
                             currentRowHeight = -1;
                             i--;
