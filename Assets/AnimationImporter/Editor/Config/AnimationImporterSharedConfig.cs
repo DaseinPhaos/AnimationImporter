@@ -105,6 +105,7 @@ namespace AnimationImporter
         public bool doTrim;
         public Color trimColor = Color.clear;
         public Vector2Int trimMargin = new Vector2Int(2, 2);
+        public Vector2Int trimSpacing = new Vector2Int(1, 1);
         public Vector2Int trimTexSize = new Vector2Int(2048, 2048);
 
         [SerializeField]

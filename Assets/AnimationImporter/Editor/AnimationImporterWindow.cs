@@ -160,6 +160,7 @@ namespace AnimationImporter
             importer.sharedData.doTrim = EditorGUILayout.Toggle("Do Trim", importer.sharedData.doTrim);
             importer.sharedData.trimColor = EditorGUILayout.ColorField("Trim Color", importer.sharedData.trimColor);
             importer.sharedData.trimMargin = EditorGUILayout.Vector2IntField("Trim Margin", importer.sharedData.trimMargin);
+            importer.sharedData.trimSpacing = EditorGUILayout.Vector2IntField("Trim Spaceing", importer.sharedData.trimSpacing);
             importer.sharedData.trimTexSize = EditorGUILayout.Vector2IntField("Trimmed Texture Size", importer.sharedData.trimTexSize);
 
 

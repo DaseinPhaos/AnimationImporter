@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d52663f1e64b4a539cad6cb8f3e65ed, type: 3}
+  m_Name: AnimationImporterConfig
+  m_EditorClassIdentifier: 
+  _animationNamesThatDoNotLoop:
+  - death
+  _automaticImporting: 0
+  _spritePixelsPerUnit: 96
+  _targetObjectType: 0
+  _spriteAlignment: 9
+  _spriteAlignmentCustomX: 0.5026178
+  _spriteAlignmentCustomY: 0.08450704
+  clipFramerate: 30
+  forceToClipFramerate: 1
+  animationBindingPrefix: 
+  doTrim: 1
+  trimColor: {r: 0, g: 0, b: 0, a: 0}
+  trimMargin: {x: 2, y: 2}
+  trimTexSize: {x: 1024, y: 1024}
+  _spritesTargetLocation:
+    _locationType: 1
+    _globalDirectory: Assets
+  _animationsTargetLocation:
+    _locationType: 1
+    _globalDirectory: Assets
+  _animationControllersTargetLocation:
+    _locationType: 0
+    _globalDirectory: Assets
+  _spriteNamingScheme: 1

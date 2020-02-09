@@ -544,9 +544,9 @@ namespace AnimationImporter
                     {
                         if (currentRowHeight < 0)
                         {
-                            currentRowHeight = ti.frame.height;
+                            currentRowHeight = ti.frame.height + sharedData.trimSpacing.y;
                         }
-                        targetOffset.x += ti.frame.width;
+                        targetOffset.x += ti.frame.width + sharedData.trimSpacing.x;
                         tis.info = ti;
                         spriteInfos.Add(tis);
                     }
@@ -559,9 +559,9 @@ namespace AnimationImporter
                         {
                             if (currentRowHeight < 0)
                             {
-                                currentRowHeight = ti.frame.height;
+                                currentRowHeight = ti.frame.height + sharedData.trimSpacing.y;
                             }
-                            targetOffset.x += ti.frame.width;
+                            targetOffset.x += ti.frame.width + sharedData.trimSpacing.x;
                             tis.info = ti;
                             spriteInfos.Add(tis);
                         }
