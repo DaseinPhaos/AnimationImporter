@@ -162,6 +162,7 @@ namespace AnimationImporter
             importer.sharedData.trimMargin = EditorGUILayout.Vector2IntField("Trim Margin", importer.sharedData.trimMargin);
             importer.sharedData.trimSpacing = EditorGUILayout.Vector2IntField("Trim Spaceing", importer.sharedData.trimSpacing);
             importer.sharedData.trimTexSize = EditorGUILayout.Vector2IntField("Trimmed Texture Size", importer.sharedData.trimTexSize);
+            importer.sharedData.PackSpreadFactor = EditorGUILayout.IntField("Pack Spread Factor", importer.sharedData.PackSpreadFactor);
 
 
             GUILayout.Space(5f);
