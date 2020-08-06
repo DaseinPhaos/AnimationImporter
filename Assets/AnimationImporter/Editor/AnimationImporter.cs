@@ -397,10 +397,8 @@ namespace AnimationImporter {
                 return;
             }
             var spriteInfos = new List<NamedSpriteInfo>();
-            animationSheet.AppendSpriteInfo(
-                sharedData.spriteAlignment,
-                sharedData.spriteAlignmentCustomX,
-                sharedData.spriteAlignmentCustomY,
+            animationSheet.CreateSpriteInfos(
+                in sharedData.customPivotSettings,
                 spriteInfos
             );
 
@@ -487,76 +485,6 @@ namespace AnimationImporter {
                 foreach (var kv in sheetBuf) {
                     outputTexs.Add(kv.Key, kv.Value.ToArray());
                 }
-
-                // trimIndexList.Sort((lhsi, rhsi) => {
-                //     var lhs = siMap[lhsi].info;
-                //     var rhs = siMap[rhsi].info;
-                //     if (lhs.frame.height != rhs.frame.height) {
-                //         return rhs.frame.height - lhs.frame.height;
-                //     }
-                //     return rhs.frame.width - lhs.frame.width;
-                // });
-
-                // Vector2Int targetOffset = new Vector2Int(0, 0);
-                // int currentRowHeight = -1;
-                // targetTex = new Texture2D(sharedData.trimTexSize.x, sharedData.trimTexSize.y, TextureFormat.RGBA32, false); // TODO: proper linear flag
-                // ClearTexture(targetTex, Color.clear);
-                // spriteInfos.Clear();
-                // for (int i = 0; i < trimIndexList.Count; ++i) {
-                //     var tis = siMap[trimIndexList[i]];
-                //     job.SetProgress(0.5f + i / (10.0f * trimIndexList.Count), string.Format("packing {0} at {1} to {2}", tis.name, tis.info.frame, targetOffset));
-                //     var ti = new SpritePacker.SpriteInfo {
-                //         tex = targetTex,
-                //         frame = new RectInt(targetOffset.x, targetOffset.y, 0, 0)
-                //     };
-
-                //     if (tis.info.TryCopyTo(ref ti)) {
-                //         if (currentRowHeight < 0) {
-                //             currentRowHeight = ti.frame.height + sharedData.trimSpacing.y;
-                //         }
-                //         targetOffset.x += ti.frame.width + sharedData.trimSpacing.x;
-                //         tis.info = ti;
-                //         spriteInfos.Add(tis);
-                //     } else {
-                //         targetOffset = new Vector2Int(0, targetOffset.y + currentRowHeight);
-                //         currentRowHeight = -1;
-                //         ti.frame = new RectInt(targetOffset.x, targetOffset.y, 0, 0);
-                //         if (tis.info.TryCopyTo(ref ti)) {
-                //             if (currentRowHeight < 0) {
-                //                 currentRowHeight = ti.frame.height + sharedData.trimSpacing.y;
-                //             }
-                //             targetOffset.x += ti.frame.width + sharedData.trimSpacing.x;
-                //             tis.info = ti;
-                //             spriteInfos.Add(tis);
-                //         } else {
-                //             if (
-                //                 tis.info.frame.width > sharedData.trimTexSize.x
-                //                 || tis.info.frame.height > sharedData.trimTexSize.y
-                //             ) {
-                //                 throw new System.ArgumentOutOfRangeException("target cannot be packed inside trimmed width");
-                //             }
-                //             // finalize one tex, move to another
-                //             var smds = new SpriteMetaData[spriteInfos.Count];
-                //             for (int si = 0; si < spriteInfos.Count; ++si) {
-                //                 smds[si] = new SpriteMetaData {
-                //                     name = spriteInfos[si].name,
-                //                     rect = new Rect(spriteInfos[si].info.frame.x, spriteInfos[si].info.frame.y, spriteInfos[si].info.frame.width, spriteInfos[si].info.frame.height),
-                //                     alignment = (int)SpriteAlignment.Custom,
-                //                     pivot = spriteInfos[si].info.pivotN,
-                //                 };
-                //             }
-
-                //             outputTexs.Add(targetTex, smds);
-                //             spriteInfos.Clear();
-                //             targetTex = new Texture2D(sharedData.trimTexSize.x, sharedData.trimTexSize.y, TextureFormat.RGBA32, false);
-                //             ClearTexture(targetTex, Color.clear);
-                //             targetOffset = new Vector2Int(0, 0);
-                //             currentRowHeight = -1;
-                //             i--;
-                //             continue;
-                //         }
-                //     }
-                // }
 
                 Texture2D.DestroyImmediate(srcTex, true);
             } else {

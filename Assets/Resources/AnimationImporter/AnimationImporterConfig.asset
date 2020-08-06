@@ -17,9 +17,13 @@ MonoBehaviour:
   _automaticImporting: 0
   _spritePixelsPerUnit: 96
   _targetObjectType: 0
-  _spriteAlignment: 9
-  _spriteAlignmentCustomX: 0.5
-  _spriteAlignmentCustomY: 0.5
+  customPivotSettings:
+    alignment: 9
+    useAsepriteCoordinates: 1
+    normalizedX: 0
+    normalizedY: 0
+    asepriteX: 91
+    asepriteY: 146
   clipFramerate: 30
   forceToClipFramerate: 1
   animationBindingPrefix: visual
@@ -27,7 +31,7 @@ MonoBehaviour:
   trimColor: {r: 0, g: 0, b: 0, a: 0}
   trimMargin: {x: 2, y: 2}
   trimSpacing: {x: 1, y: 1}
-  trimTexSize: {x: 1024, y: 1024}
+  trimTexSize: {x: 2048, y: 2048}
   PackSpreadFactor: 0
   _spritesTargetLocation:
     _locationType: 1

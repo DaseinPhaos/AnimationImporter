@@ -45,38 +45,18 @@ namespace AnimationImporter {
             }
         }
 
-        [SerializeField]
-        private SpriteAlignment _spriteAlignment = SpriteAlignment.BottomCenter;
-        public SpriteAlignment spriteAlignment {
-            get {
-                return _spriteAlignment;
-            }
-            set {
-                _spriteAlignment = value;
-            }
+        [System.Serializable]
+        public struct CustomPivotSettings {
+            public SpriteAlignment alignment;
+            public bool useAsepriteCoordinates; // l2r, t2d pixel position
+            [Range(0, 1)]
+            public float normalizedX;
+            [Range(0, 1)]
+            public float normalizedY;
+            public int asepriteX;
+            public int asepriteY;
         }
-
-        [SerializeField]
-        private float _spriteAlignmentCustomX = 0;
-        public float spriteAlignmentCustomX {
-            get {
-                return _spriteAlignmentCustomX;
-            }
-            set {
-                _spriteAlignmentCustomX = value;
-            }
-        }
-
-        [SerializeField]
-        private float _spriteAlignmentCustomY = 0;
-        public float spriteAlignmentCustomY {
-            get {
-                return _spriteAlignmentCustomY;
-            }
-            set {
-                _spriteAlignmentCustomY = value;
-            }
-        }
+        public CustomPivotSettings customPivotSettings;
 
         public int clipFramerate = 30;
         public bool forceToClipFramerate;
