@@ -1,3 +1,8 @@
+Forked Aseprite Animation Importer for Unity, with Skyline-based SpritePacking and custom pivot setting support.
+
+Original Readme
+=======
+
 Pixelart Animation Importer for Unity
 ====
 
